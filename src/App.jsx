@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 
 const DEFAULT_CHARGES = [
-  { id:1, label:"Rent",        amount:1350, icon:"🏠" },
-  { id:2, label:"Revo Fitness", amount:50,   icon:"💪" },
-  { id:3, label:"Telstra",      amount:80,   icon:"📱" },
-  { id:4, label:"Subscriptions",  amount:60,   icon:"🎵" },
-  { id:5, label:"Debt",        amount:1000, icon:"🔴" },
+
 ];
 const SLIDER_COLORS  = ["#818cf8","#34d399","#fb923c","#f472b6","#38bdf8","#a3e635","#fbbf24"];
 const DEFAULT_SLIDERS = [
