@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 
 const DEFAULT_CHARGES = [
-  { id:1, label:"Loyer",        amount:1350, icon:"🏠" },
+  { id:1, label:"Rent",        amount:1350, icon:"🏠" },
   { id:2, label:"Revo Fitness", amount:50,   icon:"💪" },
   { id:3, label:"Telstra",      amount:80,   icon:"📱" },
-  { id:4, label:"Abonnements",  amount:60,   icon:"🎵" },
-  { id:5, label:"Dette",        amount:1000, icon:"🔴" },
+  { id:4, label:"Subscriptions",  amount:60,   icon:"🎵" },
+  { id:5, label:"Debt",        amount:1000, icon:"🔴" },
 ];
 const SLIDER_COLORS  = ["#818cf8","#34d399","#fb923c","#f472b6","#38bdf8","#a3e635","#fbbf24"];
 const DEFAULT_SLIDERS = [
-  { id:1, label:"Up Bank · Vie courante", pct:30, color:"#818cf8" },
-  { id:2, label:"BRK · Investissement",  pct:70, color:"#34d399" },
+  { id:1, label:"Up Bank · Daily Life", pct:30, color:"#818cf8" },
+  { id:2, label:"BRK · Investment",  pct:70, color:"#34d399" },
 ];
-const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 const sans = { fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif" };
 const $fmt  = (n) => `$${Math.round(Math.abs(n)).toLocaleString()}`;
@@ -89,10 +89,10 @@ const TabBar = ({ tab, setTab }) => (
     border:`1px solid ${P.rim}`,
   }}>
     {[
-      { id:"income",  label:"Paies",    icon:"💰" },
-      { id:"expense", label:"Dépenses", icon:"🛒" },
+      { id:"income",  label:"Pays",    icon:"💰" },
+      { id:"expense", label:"Expenses", icon:"🛒" },
       { id:"charges", label:"Charges",  icon:"🏦" },
-      { id:"sliders", label:"Répartir", icon:"📊" },
+      { id:"sliders", label:"Split", icon:"📊" },
     ].map(t => {
       const active = tab === t.id;
       return (
@@ -133,7 +133,7 @@ const BigAmt = ({ value, onChange, color, placeholder="0" }) => (
     boxShadow:`inset 0 3px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(0,0,0,0.3)`,
     marginBottom:"10px",
   }}>
-    <div style={{ fontSize:"11px", color:P.muted, fontWeight:"600", letterSpacing:"0.07em", textTransform:"uppercase", marginBottom:"8px" }}>Montant net</div>
+    <div style={{ fontSize:"11px", color:P.muted, fontWeight:"600", letterSpacing:"0.07em", textTransform:"uppercase", marginBottom:"8px" }}>Net Amount</div>
     <div style={{ display:"flex", alignItems:"center", gap:"6px" }}>
       <span style={{ color, fontSize:"26px", fontWeight:"300" }}>$</span>
       <input type="number" value={value} onChange={e=>onChange(e.target.value)}
@@ -227,12 +227,12 @@ export default function App() {
 
   const addIncome = () => {
     const amt=parseFloat(ni.amt); if(!amt)return;
-    updateM({incomes:[...incomes,{id:Date.now(),amount:amt,label:ni.label||"Shutdown",date:new Date().toLocaleDateString("fr-AU")}]});
+    updateM({incomes:[...incomes,{id:Date.now(),amount:amt,label:ni.label||"Shutdown",date:new Date().toLocaleDateString("en-AU")}]});
     setNi({amt:"",label:""});
   };
   const addExpense = () => {
     const amt=parseFloat(ne.amt); if(!amt)return;
-    updateM({expenses:[...expenses,{id:Date.now(),amount:amt,label:ne.label||"Dépense",date:new Date().toLocaleDateString("fr-AU")}]});
+    updateM({expenses:[...expenses,{id:Date.now(),amount:amt,label:ne.label||"Expense",date:new Date().toLocaleDateString("en-AU")}]});
     setNe({amt:"",label:""});
   };
   const addCharge = () => {
@@ -278,7 +278,7 @@ export default function App() {
       {/* HEADER */}
       <div style={{marginBottom:"24px"}}>
         <div style={{fontSize:"11px",fontWeight:"600",color:P.muted,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"6px"}}>FIFO · Tracker</div>
-        <div style={{fontSize:"30px",fontWeight:"800",color:P.white,letterSpacing:"-1px"}}>Suivi Mensuel</div>
+        <div style={{fontSize:"30px",fontWeight:"800",color:P.white,letterSpacing:"-1px"}}>Monthly Tracker</div>
       </div>
 
       {/* MONTH NAV */}
@@ -299,7 +299,7 @@ export default function App() {
               <span style={{fontSize:"11px",color:P.muted,marginTop:"2px"}}>{showPicker?"▲":"▼"}</span>
             </div>
             <div style={{fontSize:"12px",color:P.muted,marginTop:"2px"}}>
-              {incomes.length} paie{incomes.length!==1?"s":""} · <span style={{color:P.green,fontWeight:"600"}}>{$fmt(totalIncome)}</span>
+              {incomes.length} pay{incomes.length!==1?"s":""} · <span style={{color:P.green,fontWeight:"600"}}>{$fmt(totalIncome)}</span>
             </div>
           </div>
 
@@ -354,7 +354,7 @@ export default function App() {
       {/* STAT PILLS */}
       {totalIncome > 0 && (
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"8px",marginBottom:"18px"}}>
-          <StatPill label="Reçu"    value={$fmt(totalIncome)}  color={P.green}  />
+          <StatPill label="Received"    value={$fmt(totalIncome)}  color={P.green}  />
           <StatPill label="Charges" value={$fmt(fixedTotal)}   color={P.orange} />
           <StatPill label="Flexible" value={$fmt(flexible)}    color={P.indigo} />
         </div>
@@ -366,83 +366,83 @@ export default function App() {
       {/* ── PAIES ── */}
       {tab==="income" && <>
         <RaisedCard accent={P.green}>
-          <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>Nouvelle paie</div>
+          <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>New Pay</div>
           <BigAmt value={ni.amt} onChange={v=>setNi(p=>({...p,amt:v}))} color={P.green} />
-          <FInput value={ni.label} onChange={v=>setNi(p=>({...p,label:v}))} placeholder="Description · ex: Shutdown FMG" onEnter={addIncome} style={{marginBottom:"12px"}} />
-          <ActionBtn onClick={addIncome} color={P.green} disabled={!ni.amt}>+ Ajouter la paie</ActionBtn>
+          <FInput value={ni.label} onChange={v=>setNi(p=>({...p,label:v}))} placeholder="Description · e.g: Shutdown FMG" onEnter={addIncome} style={{marginBottom:"12px"}} />
+          <ActionBtn onClick={addIncome} color={P.green} disabled={!ni.amt}>+ Add Pay</ActionBtn>
         </RaisedCard>
 
         {incomes.length > 0 && (
           <RaisedCard>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"6px"}}>
-              <span style={{fontSize:"12px",fontWeight:"600",color:P.muted,letterSpacing:"0.06em",textTransform:"uppercase"}}>Paies du mois</span>
+              <span style={{fontSize:"12px",fontWeight:"600",color:P.muted,letterSpacing:"0.06em",textTransform:"uppercase"}}>This Month's Pays</span>
               <span style={{background:`${P.green}22`,color:P.green,borderRadius:"8px",padding:"3px 9px",fontSize:"11px",fontWeight:"700"}}>{incomes.length}</span>
             </div>
             {incomes.map(e=><RowItem key={e.id} label={e.label} sub={e.date} value={$fmt(e.amount)} color={P.green} onRemove={()=>updateM({incomes:incomes.filter(x=>x.id!==e.id)})} />)}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:"12px",borderTop:`1px solid rgba(255,255,255,0.06)`,marginTop:"4px"}}>
-              <span style={{fontSize:"12px",color:P.muted}}>Total reçu</span>
+              <span style={{fontSize:"12px",color:P.muted}}>Total Received</span>
               <span style={{fontSize:"20px",fontWeight:"700",color:P.green}}>{$fmt(totalIncome)}</span>
             </div>
           </RaisedCard>
         )}
 
-        {incomes.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:P.muted}}><div style={{fontSize:"32px",marginBottom:"10px"}}>💰</div><div style={{fontSize:"13px"}}>Aucune paie ce mois</div></div>}
+        {incomes.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:P.muted}}><div style={{fontSize:"32px",marginBottom:"10px"}}>💰</div><div style={{fontSize:"13px"}}>No pay this month</div></div>}
       </>}
 
       {/* ── DÉPENSES ── */}
       {tab==="expense" && <>
         <RaisedCard accent={P.red}>
-          <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>Nouvelle dépense</div>
+          <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>New Expense</div>
           <BigAmt value={ne.amt} onChange={v=>setNe(p=>({...p,amt:v}))} color={P.red} />
-          <FInput value={ne.label} onChange={v=>setNe(p=>({...p,label:v}))} placeholder="Description · ex: Courses Coles" onEnter={addExpense} style={{marginBottom:"12px"}} />
-          <ActionBtn onClick={addExpense} color={P.red} disabled={!ne.amt}>+ Ajouter la dépense</ActionBtn>
+          <FInput value={ne.label} onChange={v=>setNe(p=>({...p,label:v}))} placeholder="Description · e.g: Groceries Coles" onEnter={addExpense} style={{marginBottom:"12px"}} />
+          <ActionBtn onClick={addExpense} color={P.red} disabled={!ne.amt}>+ Add Expense</ActionBtn>
         </RaisedCard>
 
         {expenses.length > 0 && (
           <RaisedCard>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"6px"}}>
-              <span style={{fontSize:"12px",fontWeight:"600",color:P.muted,letterSpacing:"0.06em",textTransform:"uppercase"}}>Dépenses du mois</span>
+              <span style={{fontSize:"12px",fontWeight:"600",color:P.muted,letterSpacing:"0.06em",textTransform:"uppercase"}}>This Month's Expenses</span>
               <span style={{background:`${P.red}22`,color:P.red,borderRadius:"8px",padding:"3px 9px",fontSize:"11px",fontWeight:"700"}}>{expenses.length}</span>
             </div>
             {expenses.map(e=><RowItem key={e.id} label={e.label} sub={e.date} value={`− ${$fmt(e.amount)}`} color={P.red} onRemove={()=>updateM({expenses:expenses.filter(x=>x.id!==e.id)})} />)}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:"12px",borderTop:`1px solid rgba(255,255,255,0.06)`,marginTop:"4px"}}>
-              <span style={{fontSize:"12px",color:P.muted}}>Total dépensé</span>
+              <span style={{fontSize:"12px",color:P.muted}}>Total Spent</span>
               <span style={{fontSize:"20px",fontWeight:"700",color:P.red}}>− {$fmt(totalExpense)}</span>
             </div>
           </RaisedCard>
         )}
 
-        {expenses.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:P.muted}}><div style={{fontSize:"32px",marginBottom:"10px"}}>🛒</div><div style={{fontSize:"13px"}}>Aucune dépense ce mois</div></div>}
+        {expenses.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:P.muted}}><div style={{fontSize:"32px",marginBottom:"10px"}}>🛒</div><div style={{fontSize:"13px"}}>No expenses this month</div></div>}
       </>}
 
       {/* ── CHARGES ── */}
       {tab==="charges" && <>
         <RaisedCard accent={P.orange}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}>
-            <span style={{fontSize:"12px",fontWeight:"600",color:P.muted,letterSpacing:"0.06em",textTransform:"uppercase"}}>Charges fixes · /mois</span>
+            <span style={{fontSize:"12px",fontWeight:"600",color:P.muted,letterSpacing:"0.06em",textTransform:"uppercase"}}>Fixed Charges · /month</span>
             <span style={{fontSize:"20px",fontWeight:"700",color:P.orange}}>{$fmt(fixedTotal)}</span>
           </div>
           {charges.map(c=><RowItem key={c.id} icon={c.icon} label={c.label} value={`$${c.amount}`} color={P.orange} onRemove={()=>persist(data,charges.filter(x=>x.id!==c.id),sliders)} />)}
         </RaisedCard>
 
         <RaisedCard>
-          <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>Ajouter une charge</div>
+          <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>Add a Charge</div>
           <div style={{display:"flex",gap:"8px",marginBottom:"10px"}}>
             <input value={nc.icon} onChange={e=>setNc(p=>({...p,icon:e.target.value}))}
               style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"13px",padding:"12px",width:"52px",textAlign:"center",fontSize:"18px",outline:"none",boxSizing:"border-box",boxShadow:`inset 0 2px 6px rgba(0,0,0,0.35)`}} />
             <input value={nc.label} onChange={e=>setNc(p=>({...p,label:e.target.value}))}
-              placeholder="Nom de la charge"
+              placeholder="Charge Name"
               style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"13px",padding:"12px 16px",color:P.text,fontSize:"14px",flex:1,...sans,outline:"none",boxShadow:`inset 0 2px 6px rgba(0,0,0,0.35)`}} />
           </div>
           <div style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"16px",padding:"14px 18px",marginBottom:"12px",boxShadow:`inset 0 3px 10px rgba(0,0,0,0.4)`}}>
-            <div style={{fontSize:"11px",color:P.muted,fontWeight:"500",marginBottom:"6px",textTransform:"uppercase",letterSpacing:"0.07em"}}>Montant mensuel</div>
+            <div style={{fontSize:"11px",color:P.muted,fontWeight:"500",marginBottom:"6px",textTransform:"uppercase",letterSpacing:"0.07em"}}>Monthly Amount</div>
             <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
               <span style={{color:P.orange,fontSize:"22px",fontWeight:"300"}}>$</span>
               <input type="number" value={nc.amt} onChange={e=>setNc(p=>({...p,amt:e.target.value}))} placeholder="0"
                 style={{background:"transparent",border:"none",outline:"none",color:P.orange,fontSize:"28px",fontWeight:"600",width:"100%",...sans}} />
             </div>
           </div>
-          <ActionBtn onClick={addCharge} color={P.orange} disabled={!nc.amt||!nc.label}>+ Ajouter la charge</ActionBtn>
+          <ActionBtn onClick={addCharge} color={P.orange} disabled={!nc.amt||!nc.label}>+ Add Charge</ActionBtn>
         </RaisedCard>
       </>}
 
@@ -452,7 +452,7 @@ export default function App() {
           <RaisedCard accent={P.indigo}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"20px"}}>
               <div>
-                <div style={{fontSize:"11px",color:P.muted,fontWeight:"600",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:"4px"}}>Flexible du mois</div>
+                <div style={{fontSize:"11px",color:P.muted,fontWeight:"600",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:"4px"}}>This Month's Flexible</div>
                 <div style={{fontSize:"28px",fontWeight:"800",color:P.indigo,letterSpacing:"-0.5px"}}>{$fmt(flexible)}</div>
               </div>
               <button onClick={addSlider} style={{
@@ -493,16 +493,16 @@ export default function App() {
 
           {/* Add slider form */}
           <RaisedCard>
-            <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"12px"}}>Nouveau slider</div>
-            <FInput value={ns.label} onChange={v=>setNs({label:v})} placeholder="ex: Épargne · Westpac" onEnter={addSlider} style={{marginBottom:"12px"}} />
+            <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"12px"}}>New Slider</div>
+            <FInput value={ns.label} onChange={v=>setNs({label:v})} placeholder="e.g: Savings · Westpac" onEnter={addSlider} style={{marginBottom:"12px"}} />
             <ActionBtn onClick={addSlider} color={SLIDER_COLORS[sliders.length%SLIDER_COLORS.length]} disabled={!ns.label}>+ Ajouter</ActionBtn>
           </RaisedCard>
 
           {/* Virements */}
           <div style={{marginTop:"8px"}}>
-            <div style={{fontSize:"11px",fontWeight:"600",color:P.muted,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:"10px"}}>Virements du mois</div>
+            <div style={{fontSize:"11px",fontWeight:"600",color:P.muted,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:"10px"}}>Monthly Transfers</div>
             <div style={{background:`linear-gradient(145deg,#1a1f28,#141820)`,border:`1px solid ${P.rim}`,borderRadius:"22px",padding:"8px",boxShadow:lift}}>
-              {[{label:"Westpac",sub:"Charges fixes · toujours pareil",color:P.blue,amt:fixedTotal},...normalized].map((a,i)=>(
+              {[{label:"Westpac",sub:"Fixed Charges · always the same",color:P.blue,amt:fixedTotal},...normalized].map((a,i)=>(
                 <div key={a.label+i} style={{
                   display:"flex",justifyContent:"space-between",alignItems:"center",
                   padding:"14px 16px",borderRadius:"16px",marginBottom: i<normalized.length?"4px":"0",
@@ -510,7 +510,7 @@ export default function App() {
                 }}>
                   <div>
                     <div style={{fontSize:"13px",fontWeight:"600",color:P.text}}>{a.label}</div>
-                    <div style={{fontSize:"11px",color:P.muted,marginTop:"2px"}}>{a.sub || `${Math.round(a.pct*100/sliderSum)}% du flexible`}</div>
+                    <div style={{fontSize:"11px",color:P.muted,marginTop:"2px"}}>{a.sub || `${Math.round(a.pct*100/sliderSum)}% of flexible`}</div>
                   </div>
                   <div style={{fontSize:"22px",fontWeight:"700",color:a.color,textShadow:`0 0 12px ${a.color}66`}}>{$fmt(a.amt)}</div>
                 </div>
@@ -521,9 +521,9 @@ export default function App() {
           <div style={{textAlign:"center",padding:"50px 20px",color:P.muted}}>
             <div style={{fontSize:"36px",marginBottom:"12px"}}>📊</div>
             <div style={{fontSize:"14px",fontWeight:"500",color:P.sub}}>
-              {totalIncome===0?"Ajoute d'abord une paie":"Charges pas encore couvertes"}
+              {totalIncome===0?"Add a pay first":"Charges not covered yet"}
             </div>
-            {totalIncome>0&&<div style={{fontSize:"12px",marginTop:"6px"}}>Encore {$fmt(fixedTotal-totalIncome)} à recevoir</div>}
+            {totalIncome>0&&<div style={{fontSize:"12px",marginTop:"6px"}}>Still receiving</div>}
           </div>
         )}
       </>}
