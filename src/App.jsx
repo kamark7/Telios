@@ -331,10 +331,7 @@ export default function App() {
         <div style={{width:"46px", height:"46px", borderRadius:"13px", flexShrink:0, background:"#0B0B1A", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 0 20px rgba(123,92,255,0.25), " + liftSm, border:"1px solid rgba(167,139,250,0.2)"}}>
           <TeliosLogo size={32} />
         </div>
-        <div>
-          <div style={{fontSize:"11px", fontWeight:"600", color:P.muted, letterSpacing:"0.14em", textTransform:"uppercase"}}>TELIOS</div>
-          <div style={{fontSize:"24px", fontWeight:"800", color:P.white, letterSpacing:"-0.5px", lineHeight:1.1}}>Monthly Tracker</div>
-        </div>
+        <div style={{fontSize:"11px", fontWeight:"600", color:P.muted, letterSpacing:"0.14em", textTransform:"uppercase"}}>TELIOS</div>
       </div>
 
       <RaisedCard>
