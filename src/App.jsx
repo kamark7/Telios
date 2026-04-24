@@ -85,11 +85,12 @@ const RaisedCard = ({ children, accent, style={} }) => (
     border:`1px solid ${P.rim}`,
     position:"relative",
     overflow:"hidden",
-    ...style,
-  }}>
-    {/* Top highlight rim */}
-    <div style={{ position:"absolute", top:0, left:"10%", right:"10%", height:"1px", background:"rgba(255,255,255,0.10)", borderRadius:"999px" }} />
-    {children}
+
+}}>
+{/* Top highlight rim */}
+<div style={{ position:“absolute”, top:0, left:“10%”, right:“10%”, height:“1px”, background:“rgba(255,255,255,0.10)”, borderRadius:“999px” }} />
+{children}
+
   </div>
 );
 
@@ -136,7 +137,7 @@ const TabBar = ({ tab, setTab }) => (
           boxShadow: active ? `${liftSm}, inset 0 1px 0 rgba(255,255,255,0.08)` : "none",
         }}>
           <div style={{ fontSize:"17px" }}>{t.icon}</div>
-          <div style={{ fontSize:"10px", color: active ? P.text : P.muted, fontWeight: active?"600":"400", marginTop:"3px", ...sans }}>{t.label}</div>
+          <div style={{ fontSize:"10px", color: active ? P.text : P.muted, fontWeight: active?"600":"400", marginTop:"3px", fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif" }}>{t.label}</div>
         </button>
       );
     })}
@@ -152,10 +153,13 @@ style={{
 background:`linear-gradient(145deg, #161b23, #121620)`,
 border:`1px solid ${P.rim}`, borderRadius:“13px”,
 padding:“12px 16px”, color:P.text, fontSize:“14px”, width:“100%”,
-…sans, outline:“none”, boxSizing:“border-box”,
+fontFamily:”‘Inter’,-apple-system,BlinkMacSystemFont,sans-serif”, outline:“none”, boxSizing:“border-box”,
 boxShadow:“inset 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(0,0,0,0.2)”,
-…style,
+
+```
 }} />
+```
+
 );
 
 const BigAmt = ({ value, onChange, color, placeholder=“0” }) => (
@@ -171,7 +175,7 @@ const BigAmt = ({ value, onChange, color, placeholder=“0” }) => (
       <span style={{ color, fontSize:"26px", fontWeight:"300" }}>$</span>
       <input type="number" value={value} onChange={e=>onChange(e.target.value)}
         placeholder={placeholder}
-        style={{ background:"transparent", border:"none", outline:"none", color, fontSize:"34px", fontWeight:"600", width:"100%", ...sans, letterSpacing:"-1px" }} />
+        style={{ background:"transparent", border:"none", outline:"none", color, fontSize:"34px", fontWeight:"600", width:"100%", fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif", letterSpacing:"-1px" }} />
     </div>
   </div>
 );
@@ -185,7 +189,7 @@ background: disabled
 : `linear-gradient(145deg, ${color}ee, ${color}bb)`,
 color: disabled ? P.muted : “#0d1117”,
 fontSize:“14px”, fontWeight:“700”, cursor: disabled?“default”:“pointer”,
-…sans, transition:“all 0.2s”,
+fontFamily:”‘Inter’,-apple-system,BlinkMacSystemFont,sans-serif”, transition:“all 0.2s”,
 boxShadow: disabled ? “none” : `${liftSm}, ${glow(color, 0.35)}`,
 }}>{children}</button>
 );
@@ -249,7 +253,7 @@ try { window.storage.set(“fifo-v5”, JSON.stringify({data:d,charges:ch,slider
 const mData   = data[key] || { incomes:[], expenses:[] };
 const incomes  = mData.incomes  || [];
 const expenses = mData.expenses || [];
-const updateM  = (patch) => persist({…data,[key]:{…mData,…patch}},charges,sliders);
+const updateM  = (patch) => persist(Object.assign({},data,{[key]:Object.assign({},mData,patch)}),charges,sliders);
 
 const fixedTotal   = charges.reduce((s,c)=>s+c.amount,0);
 const totalIncome  = incomes.reduce((s,e)=>s+e.amount,0);
@@ -257,46 +261,46 @@ const totalExpense = expenses.reduce((s,e)=>s+e.amount,0);
 const flexible     = Math.max(0, totalIncome - fixedTotal);
 const deficit      = totalIncome > 0 && totalIncome < fixedTotal;
 const sliderSum    = sliders.reduce((s,sl)=>s+sl.pct,0);
-const normalized   = sliders.map(sl=>({…sl, amt:sliderSum>0?Math.round(flexible*sl.pct/sliderSum):0}));
+const normalized   = sliders.map(function(sl){return Object.assign({},sl,{amt:sliderSum>0?Math.round(flexible*sl.pct/sliderSum):0});});
 
 const addIncome = () => {
 const amt=parseFloat(ni.amt); if(!amt)return;
-updateM({incomes:[…incomes,{id:Date.now(),amount:amt,label:ni.label||“Shutdown”,date:new Date().toLocaleDateString(“en-AU”)}]});
+updateM({incomes:incomes.concat([{id:Date.now(),amount:amt,label:ni.label||“Shutdown”,date:new Date().toLocaleDateString(“en-AU”)}])});
 setNi({amt:””,label:””});
 };
 const addExpense = () => {
 const amt=parseFloat(ne.amt); if(!amt)return;
-updateM({expenses:[…expenses,{id:Date.now(),amount:amt,label:ne.label||“Expense”,date:new Date().toLocaleDateString(“en-AU”)}]});
+updateM({expenses:expenses.concat([{id:Date.now(),amount:amt,label:ne.label||“Expense”,date:new Date().toLocaleDateString(“en-AU”)}])});
 setNe({amt:””,label:””});
 };
 const addCharge = () => {
 const amt=parseFloat(nc.amt); if(!amt||!nc.label)return;
-persist(data,[…charges,{id:Date.now(),label:nc.label,amount:amt,icon:nc.icon||“💳”}],sliders);
+persist(data,charges.concat([{id:Date.now(),label:nc.label,amount:amt,icon:nc.icon||“💳”}]),sliders);
 setNc({amt:””,label:””,icon:“💳”});
 };
 const addSlider = () => {
 if(!ns.label)return;
 const color=SLIDER_COLORS[sliders.length%SLIDER_COLORS.length];
 const pct=Math.round(100/(sliders.length+1));
-const newList=sliders.map(s=>({…s,pct:Math.round(s.pct*sliders.length/(sliders.length+1))}));
-newList.push({id:Date.now(),label:ns.label,pct,color});
+const newList=sliders.map(function(s){return Object.assign({},s,{pct:Math.round(s.pct*sliders.length/(sliders.length+1))});});
+newList.push({id:Date.now(),label:ns.label,pct:pct,color:color});
 persist(data,charges,newList);
 setNs({label:””});
 };
 const moveSlider = (id,val) => {
-const idx=sliders.findIndex(s=>s.id===id);
-const ns=[…sliders];
-const diff=val-ns[idx].pct;
-ns[idx]={…ns[idx],pct:val};
-const o=ns.length-1===idx?ns.length-2:ns.length-1;
-ns[o]={…ns[o],pct:Math.max(0,ns[o].pct-diff)};
-persist(data,charges,ns);
+const sidx=sliders.findIndex(function(s){return s.id===id;});
+const nsl=sliders.map(function(x){return Object.assign({},x);});
+const diff=val-nsl[sidx].pct;
+nsl[sidx]=Object.assign({},nsl[sidx],{pct:val});
+const o=nsl.length-1===sidx?nsl.length-2:nsl.length-1;
+nsl[o]=Object.assign({},nsl[o],{pct:Math.max(0,nsl[o].pct-diff)});
+persist(data,charges,nsl);
 };
 const removeSlider = (id) => {
 if(sliders.length<=1)return;
 const removed=sliders.find(s=>s.id===id);
 const rest=sliders.filter(s=>s.id!==id);
-rest[rest.length-1]={…rest[rest.length-1],pct:rest[rest.length-1].pct+removed.pct};
+rest[rest.length-1]=Object.assign({},rest[rest.length-1],{pct:rest[rest.length-1].pct+removed.pct});
 persist(data,charges,rest);
 };
 const navMonth = (dir) => { const d=new Date(year,month+dir); setYear(d.getFullYear()); setMonth(d.getMonth()); };
@@ -312,9 +316,8 @@ return () => clearTimeout(timer);
 }, []);
 
 if (loading || showSplash) return (
-
 <div style={{
-…sans, background: “linear-gradient(160deg, #0d0f1a 0%, #1a1040 50%, #0d0f1a 100%)”,
+fontFamily:”‘Inter’,-apple-system,BlinkMacSystemFont,sans-serif”, background: “linear-gradient(160deg, #0d0f1a 0%, #1a1040 50%, #0d0f1a 100%)”,
 minHeight:“100vh”, display:“flex”, flexDirection:“column”,
 alignItems:“center”, justifyContent:“center”, gap:“28px”
 }}>
@@ -368,8 +371,7 @@ position:“relative”, overflow:“hidden”
 );
 
 return (
-
-<div style={{…sans,background:P.bg,minHeight:“100vh”,color:P.text,padding:“24px 16px 48px”,maxWidth:“440px”,margin:“0 auto”}}>
+<div style={{fontFamily:”‘Inter’,-apple-system,BlinkMacSystemFont,sans-serif”,background:P.bg,minHeight:“100vh”,color:P.text,padding:“24px 16px 48px”,maxWidth:“440px”,margin:“0 auto”}}>
 
 ```
   {/* HEADER */}
@@ -433,7 +435,7 @@ return (
                 borderRadius:"10px",padding:"6px 10px",
                 color: y===year ? P.white : P.muted,
                 fontSize:"12px",fontWeight: y===year?"700":"500",
-                cursor:"pointer",...sans,
+                cursor:"pointer",fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif",
                 boxShadow: y===year ? `${liftSm},${glow(P.indigo,0.25)}` : liftSm,
                 transition:"all 0.15s",
               }}>{y}</button>
@@ -449,7 +451,7 @@ return (
                 borderRadius:"10px",padding:"8px 4px",
                 color: i===month ? P.white : P.label,
                 fontSize:"11px",fontWeight: i===month?"700":"400",
-                cursor:"pointer",...sans,
+                cursor:"pointer",fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif",
                 boxShadow: i===month ? `${liftSm},${glow(P.indigo,0.2)}` : liftSm,
                 transition:"all 0.15s",
               }}>{m.slice(0,3)}</button>
@@ -475,8 +477,8 @@ return (
   {tab==="income" && <>
     <RaisedCard accent={P.green}>
       <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>New Pay</div>
-      <BigAmt value={ni.amt} onChange={v=>setNi(p=>({...p,amt:v}))} color={P.green} />
-      <FInput value={ni.label} onChange={v=>setNi(p=>({...p,label:v}))} placeholder="Description · e.g: Shutdown FMG" onEnter={addIncome} style={{marginBottom:"12px"}} />
+      <BigAmt value={ni.amt} onChange={v=>setNi(function(p){return {amt:v,label:p.label};})} color={P.green} />
+      <FInput value={ni.label} onChange={v=>setNi(function(p){return {amt:p.amt,label:v};})} placeholder="Description · e.g: Shutdown FMG" onEnter={addIncome} style={{marginBottom:"12px"}} />
       <ActionBtn onClick={addIncome} color={P.green} disabled={!ni.amt}>+ Add Pay</ActionBtn>
     </RaisedCard>
 
@@ -501,8 +503,8 @@ return (
   {tab==="expense" && <>
     <RaisedCard accent={P.red}>
       <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>New Expense</div>
-      <BigAmt value={ne.amt} onChange={v=>setNe(p=>({...p,amt:v}))} color={P.red} />
-      <FInput value={ne.label} onChange={v=>setNe(p=>({...p,label:v}))} placeholder="Description · e.g: Groceries Coles" onEnter={addExpense} style={{marginBottom:"12px"}} />
+      <BigAmt value={ne.amt} onChange={v=>setNe(function(p){return {amt:v,label:p.label};})} color={P.red} />
+      <FInput value={ne.label} onChange={v=>setNe(function(p){return {amt:p.amt,label:v};})} placeholder="Description · e.g: Groceries Coles" onEnter={addExpense} style={{marginBottom:"12px"}} />
       <ActionBtn onClick={addExpense} color={P.red} disabled={!ne.amt}>+ Add Expense</ActionBtn>
     </RaisedCard>
 
@@ -536,18 +538,18 @@ return (
     <RaisedCard>
       <div style={{fontSize:"12px",color:P.muted,fontWeight:"600",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:"14px"}}>Add a Charge</div>
       <div style={{display:"flex",gap:"8px",marginBottom:"10px"}}>
-        <input value={nc.icon} onChange={e=>setNc(p=>({...p,icon:e.target.value}))}
+        <input value={nc.icon} onChange={e=>setNc(function(p){return {amt:p.amt,label:p.label,icon:e.target.value};})}
           style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"13px",padding:"12px",width:"52px",textAlign:"center",fontSize:"18px",outline:"none",boxSizing:"border-box",boxShadow:`inset 0 2px 6px rgba(0,0,0,0.35)`}} />
-        <input value={nc.label} onChange={e=>setNc(p=>({...p,label:e.target.value}))}
+        <input value={nc.label} onChange={e=>setNc(function(p){return {amt:p.amt,label:e.target.value,icon:p.icon};})}
           placeholder="Charge Name"
-          style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"13px",padding:"12px 16px",color:P.text,fontSize:"14px",flex:1,...sans,outline:"none",boxShadow:`inset 0 2px 6px rgba(0,0,0,0.35)`}} />
+          style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"13px",padding:"12px 16px",color:P.text,fontSize:"14px",flex:1,fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif",outline:"none",boxShadow:`inset 0 2px 6px rgba(0,0,0,0.35)`}} />
       </div>
       <div style={{background:`linear-gradient(145deg,#161b23,#111520)`,border:`1px solid ${P.rim}`,borderRadius:"16px",padding:"14px 18px",marginBottom:"12px",boxShadow:`inset 0 3px 10px rgba(0,0,0,0.4)`}}>
         <div style={{fontSize:"11px",color:P.muted,fontWeight:"500",marginBottom:"6px",textTransform:"uppercase",letterSpacing:"0.07em"}}>Monthly Amount</div>
         <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
           <span style={{color:P.orange,fontSize:"22px",fontWeight:"300"}}>$</span>
-          <input type="number" value={nc.amt} onChange={e=>setNc(p=>({...p,amt:e.target.value}))} placeholder="0"
-            style={{background:"transparent",border:"none",outline:"none",color:P.orange,fontSize:"28px",fontWeight:"600",width:"100%",...sans}} />
+          <input type="number" value={nc.amt} onChange={e=>setNc(function(p){return {amt:e.target.value,label:p.label,icon:p.icon};})} placeholder="0"
+            style={{background:"transparent",border:"none",outline:"none",color:P.orange,fontSize:"28px",fontWeight:"600",width:"100%",fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif"}} />
         </div>
       </div>
       <ActionBtn onClick={addCharge} color={P.orange} disabled={!nc.amt||!nc.label}>+ Add Charge</ActionBtn>
@@ -567,7 +569,7 @@ return (
             background:`linear-gradient(145deg,#252d3a,#1a2030)`,
             border:`1px solid ${P.green}44`,color:P.green,
             borderRadius:"12px",padding:"8px 14px",fontSize:"12px",
-            fontWeight:"700",cursor:"pointer",...sans,
+            fontWeight:"700",cursor:"pointer",fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif",
             boxShadow:`${liftSm},${glow(P.green,0.15)}`,
           }}>+ Slider</button>
         </div>
@@ -610,7 +612,7 @@ return (
       <div style={{marginTop:"8px"}}>
         <div style={{fontSize:"11px",fontWeight:"600",color:P.muted,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:"10px"}}>Monthly Transfers</div>
         <div style={{background:`linear-gradient(145deg,#1a1f28,#141820)`,border:`1px solid ${P.rim}`,borderRadius:"22px",padding:"8px",boxShadow:lift}}>
-          {[{label:"Westpac",sub:"Fixed Charges · always the same",color:P.blue,amt:fixedTotal},...normalized].map((a,i)=>(
+          {[{label:"Westpac",sub:"Fixed Charges · always the same",color:P.blue,amt:fixedTotal}].concat(normalized).map((a,i)=>(
             <div key={a.label+i} style={{
               display:"flex",justifyContent:"space-between",alignItems:"center",
               padding:"14px 16px",borderRadius:"16px",marginBottom: i<normalized.length?"4px":"0",
