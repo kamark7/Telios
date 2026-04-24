@@ -331,7 +331,7 @@ export default function App() {
   }
 
   return (
-    <div style={{fontFamily:F, background:P.bg, minHeight:"100vh", color:P.text, padding:"24px 16px 48px", maxWidth:"440px", margin:"0 auto"}}>
+    <div style={{fontFamily:F, background:P.bg, minHeight:"100vh", color:P.text, padding:"54px 16px 48px", maxWidth:"440px", margin:"0 auto"}}>
 
       <div style={{marginBottom:"24px", display:"flex", alignItems:"center", gap:"14px"}}>
         <div style={{width:"46px", height:"46px", borderRadius:"13px", flexShrink:0, background:"#0B0B1A", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 0 20px rgba(123,92,255,0.25), " + liftSm, border:"1px solid rgba(167,139,250,0.2)"}}>
