@@ -312,6 +312,7 @@ return () => clearTimeout(timer);
 }, []);
 
 if (loading || showSplash) return (
+
 <div style={{
 …sans, background: “linear-gradient(160deg, #0d0f1a 0%, #1a1040 50%, #0d0f1a 100%)”,
 minHeight:“100vh”, display:“flex”, flexDirection:“column”,
@@ -367,6 +368,7 @@ position:“relative”, overflow:“hidden”
 );
 
 return (
+
 <div style={{…sans,background:P.bg,minHeight:“100vh”,color:P.text,padding:“24px 16px 48px”,maxWidth:“440px”,margin:“0 auto”}}>
 
 ```
