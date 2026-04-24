@@ -1,5 +1,34 @@
 import { useState, useEffect } from “react”;
 
+// ─── TELIOS LOGO C — Monument ─────────────────────────────
+const TeliosLogo = ({ size = 80 }) => (
+<svg viewBox=“0 0 200 220” width={size} height={size * 1.1} xmlns=“http://www.w3.org/2000/svg”>
+<defs>
+<linearGradient id={`tl-g1-${size}`} x1=“0%” y1=“0%” x2=“100%” y2=“100%”>
+<stop offset="0%" stopColor="#9D82FF"/>
+<stop offset="100%" stopColor="#7B5CFF"/>
+</linearGradient>
+<linearGradient id={`tl-g2-${size}`} x1=“0%” y1=“0%” x2=“0%” y2=“100%”>
+<stop offset="0%" stopColor="#c4b5fd"/>
+<stop offset="100%" stopColor="#7B5CFF"/>
+</linearGradient>
+</defs>
+{/* Top bar trapezoid */}
+<path d=“M18 42 L182 42 L182 78 L116 78 L100 94 L84 78 L18 78 Z” fill={`url(#tl-g1-${size})`}/>
+{/* 3D face right */}
+<path d="M182 42 L190 50 L190 86 L116 86 L100 102 L116 94 L182 78 Z" fill="#9D82FF" opacity="0.5"/>
+{/* Wide stem */}
+<path d=“M84 94 L116 94 L116 190 L84 190 Z” fill={`url(#tl-g2-${size})`}/>
+{/* Stem 3D face */}
+<path d="M116 94 L124 102 L124 198 L116 190 Z" fill="#9D82FF" opacity="0.45"/>
+{/* Center divider */}
+<line x1="100" y1="94" x2="100" y2="192" stroke="#0a0812" strokeWidth="2" opacity="0.5"/>
+{/* Bottom feet */}
+<rect x="66" y="190" width="36" height="16" rx="4" fill="#7B5CFF"/>
+<rect x="98" y="190" width="36" height="16" rx="4" fill="#7B5CFF"/>
+</svg>
+);
+
 const DEFAULT_CHARGES = [
 { id:1, label:“Rent”,        amount:1350, icon:“🏠” },
 { id:2, label:“Revo Fitness”, amount:50,   icon:“💪” },
@@ -298,16 +327,7 @@ border:“1px solid rgba(167,139,250,0.2)”,
 position:“relative”, overflow:“hidden”
 }}>
 <div style={{ position:“absolute”, top:0, left:“10%”, right:“10%”, height:“1px”, background:“rgba(167,139,250,0.3)”, borderRadius:“999px” }} />
-<svg viewBox="0 0 200 200" width="80" height="80">
-<defs>
-<linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" stopColor="#a78bfa"/>
-<stop offset="100%" stopColor="#6d28d9"/>
-</linearGradient>
-</defs>
-<rect x="34" y="52" width="132" height="22" rx="11" fill="url(#lg)"/>
-<rect x="89" y="52" width="22" height="110" rx="11" fill="url(#lg)"/>
-</svg>
+<TeliosLogo size={80} />
 </div>
 
 ```
@@ -359,25 +379,7 @@ return (
       boxShadow:`0 0 20px rgba(123,92,255,0.25), ${liftSm}`,
       border:"1px solid rgba(167,139,250,0.2)",
     }}>
-      <svg viewBox="0 0 200 220" width="30" height="33">
-        <defs>
-          <linearGradient id="lgh" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#9D82FF"/>
-            <stop offset="100%" stopColor="#7B5CFF"/>
-          </linearGradient>
-          <linearGradient id="lgh2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#c4b5fd"/>
-            <stop offset="100%" stopColor="#7B5CFF"/>
-          </linearGradient>
-        </defs>
-        <path d="M18 42 L182 42 L182 78 L116 78 L100 94 L84 78 L18 78 Z" fill="url(#lgh)"/>
-        <path d="M182 42 L190 50 L190 86 L116 86 L100 102 L116 94 L182 78 Z" fill="#9D82FF" opacity="0.5"/>
-        <path d="M84 94 L116 94 L116 190 L84 190 Z" fill="url(#lgh2)"/>
-        <path d="M116 94 L124 102 L124 198 L116 190 Z" fill="#9D82FF" opacity="0.45"/>
-        <line x1="100" y1="94" x2="100" y2="192" stroke="#0a0812" strokeWidth="2" opacity="0.5"/>
-        <rect x="68" y="190" width="36" height="16" rx="4" fill="#7B5CFF"/>
-        <rect x="96" y="190" width="36" height="16" rx="4" fill="#7B5CFF"/>
-      </svg>
+      <TeliosLogo size={32} />
     </div>
     <div>
       <div style={{fontSize:"11px",fontWeight:"600",color:P.muted,letterSpacing:"0.14em",textTransform:"uppercase"}}>TELIOS</div>
