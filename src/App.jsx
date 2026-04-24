@@ -12,13 +12,7 @@ var P = {
   green:"#34d399", red:"#f87171", orange:"#fb923c", indigo:"#818cf8", blue:"#38bdf8", white:"#f0f4ff",
 };
 
-var DEFAULT_CHARGES = [
-  { id:1, label:"Rent",          amount:1350, icon:"🏠" },
-  { id:2, label:"Revo Fitness",  amount:50,   icon:"💪" },
-  { id:3, label:"Telstra",       amount:80,   icon:"📱" },
-  { id:4, label:"Subscriptions", amount:60,   icon:"🎵" },
-  { id:5, label:"Debt",          amount:1000, icon:"🔴" },
-];
+var DEFAULT_CHARGES = [];
 
 var SLIDER_COLORS = ["#818cf8","#34d399","#fb923c","#f472b6","#38bdf8","#a3e635","#fbbf24"];
 
