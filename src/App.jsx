@@ -19,6 +19,8 @@ var DEFAULT_SLIDERS = [
   { id:2, label:"BRK - Investment",     pct:70, color:"#34d399" },
 ];
 
+var EMOJI_OPTIONS = ["🏠","💪","📱","🎵","🔴","🚗","🍔","💊","📚","✈️","🎮","💡","🏋️","🐶","👕"];
+
 var MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 var MONTHS_FR = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 var YEARS = [2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036];
@@ -300,8 +302,9 @@ export default function App() {
   var [ne,         setNe]         = useState({amt:"", label:""});
   var [nc,         setNc]         = useState({amt:"", label:"", icon:"💳"});
   var [ns,         setNs]         = useState({label:""});
-  var [showPicker, setShowPicker] = useState(false);
-  var [showSplash, setShowSplash] = useState(true);
+  var [showPicker,     setShowPicker]     = useState(false);
+  var [showEmojiPicker,setShowEmojiPicker] = useState(false);
+  var [showSplash,     setShowSplash]     = useState(true);
 
   var t      = T[lang];
   var MONTHS = lang === "fr" ? MONTHS_FR : MONTHS_EN;
@@ -580,12 +583,38 @@ export default function App() {
           </RaisedCard>
           <RaisedCard>
             <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>{t.addACharge}</div>
-            <div style={{display:"flex", gap:"8px", marginBottom:"10px"}}>
-              <input value={nc.icon} onChange={function(e){ setNc({amt:nc.amt, label:nc.label, icon:e.target.value}); }}
-                style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px", width:"52px", textAlign:"center", fontSize:"18px", outline:"none", boxSizing:"border-box"}} />
-              <input value={nc.label} onChange={function(e){ setNc({amt:nc.amt, label:e.target.value, icon:nc.icon}); }}
-                placeholder={t.chargeName}
-                style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px 16px", color:P.text, fontSize:"14px", flex:1, fontFamily:F, outline:"none"}} />
+            <div style={{marginBottom:"10px"}}>
+              <div style={{display:"flex", gap:"8px", marginBottom: showEmojiPicker ? "8px" : "0"}}>
+                <button onClick={function(){ setShowEmojiPicker(function(v){ return !v; }); }} style={{
+                  background: showEmojiPicker ? "linear-gradient(145deg,#252d3a,#1d2430)" : "linear-gradient(145deg,#161b23,#111520)",
+                  border:"1px solid " + (showEmojiPicker ? P.rimHi : P.rim),
+                  borderRadius:"13px", padding:"12px", width:"52px", flexShrink:0,
+                  textAlign:"center", fontSize:"18px", cursor:"pointer",
+                  boxShadow: showEmojiPicker ? liftSm : "none",
+                }}>{nc.icon}</button>
+                <input value={nc.label} onChange={function(e){ setNc({amt:nc.amt, label:e.target.value, icon:nc.icon}); }}
+                  placeholder={t.chargeName}
+                  style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px 16px", color:P.text, fontSize:"14px", flex:1, fontFamily:F, outline:"none"}} />
+              </div>
+              {showEmojiPicker && (
+                <div style={{
+                  display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:"6px",
+                  background:"linear-gradient(145deg,#161b23,#111520)",
+                  border:"1px solid " + P.rim, borderRadius:"13px", padding:"10px",
+                }}>
+                  {EMOJI_OPTIONS.map(function(em){
+                    var sel = em === nc.icon;
+                    return (
+                      <button key={em} onClick={function(){ setNc({amt:nc.amt, label:nc.label, icon:em}); setShowEmojiPicker(false); }} style={{
+                        background: sel ? "linear-gradient(145deg,#252d3a,#1d2430)" : "transparent",
+                        border: sel ? "1px solid " + P.rimHi : "1px solid transparent",
+                        borderRadius:"8px", padding:"8px", fontSize:"20px", cursor:"pointer",
+                        boxShadow: sel ? liftSm : "none",
+                      }}>{em}</button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"16px", padding:"14px 18px", marginBottom:"12px"}}>
               <div style={{fontSize:"11px", color:P.muted, fontWeight:"500", marginBottom:"6px", textTransform:"uppercase", letterSpacing:"0.07em"}}>{t.monthlyAmount}</div>
