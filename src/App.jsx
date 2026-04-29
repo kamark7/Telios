@@ -13,16 +13,106 @@ var P = {
 };
 
 var DEFAULT_CHARGES = [];
-
 var SLIDER_COLORS = ["#818cf8","#34d399","#fb923c","#f472b6","#38bdf8","#a3e635","#fbbf24"];
-
 var DEFAULT_SLIDERS = [
   { id:1, label:"Up Bank - Daily Life", pct:30, color:"#818cf8" },
   { id:2, label:"BRK - Investment",     pct:70, color:"#34d399" },
 ];
 
-var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-var YEARS  = [2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036];
+var MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MONTHS_FR = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+var YEARS = [2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036];
+
+var T = {
+  en: {
+    tagline:           "Your financial purpose",
+    tabPays:           "Pays",
+    tabExpenses:       "Expenses",
+    tabCharges:        "Charges",
+    tabSplit:          "Split",
+    received:          "Received",
+    charges:           "Charges",
+    flexible:          "Flexible",
+    payWord:           "pay",
+    netAmount:         "Net Amount",
+    newPay:            "New Pay",
+    descPay:           "Description - e.g: Shutdown FMG",
+    addPay:            "+ Add Pay",
+    thisMonthPays:     "This Month's Pays",
+    totalReceived:     "Total Received",
+    noPay:             "No pay this month",
+    newExpense:        "New Expense",
+    descExpense:       "Description - e.g: Groceries Coles",
+    addExpense:        "+ Add Expense",
+    thisMonthExpenses: "This Month's Expenses",
+    totalSpent:        "Total Spent",
+    noExpenses:        "No expenses this month",
+    fixedCharges:      "Fixed Charges / month",
+    addACharge:        "Add a Charge",
+    chargeName:        "Charge Name",
+    monthlyAmount:     "Monthly Amount",
+    addCharge:         "+ Add Charge",
+    thisMonthFlexible: "This Month's Flexible",
+    addSliderBtn:      "+ Slider",
+    newSlider:         "New Slider",
+    sliderPlaceholder: "e.g: Savings - Westpac",
+    addSlider:         "+ Add Slider",
+    monthlyTransfers:  "Monthly Transfers",
+    fixedChargesSub:   "Fixed Charges - always the same",
+    ofFlexible:        "% of flexible",
+    addPayFirst:       "Add a pay first",
+    chargesNotCovered: "Charges not covered yet",
+    stillToCover:      "Still",
+    toCover:           "to cover",
+    incomeDefault:     "Income",
+    expenseDefault:    "Expense",
+    dateLocale:        "en-AU",
+  },
+  fr: {
+    tagline:           "Votre but financier",
+    tabPays:           "Paies",
+    tabExpenses:       "Dépenses",
+    tabCharges:        "Charges",
+    tabSplit:          "Répartition",
+    received:          "Reçu",
+    charges:           "Charges",
+    flexible:          "Flexible",
+    payWord:           "paie",
+    netAmount:         "Montant net",
+    newPay:            "Nouvelle paie",
+    descPay:           "Description - ex: Shutdown FMG",
+    addPay:            "+ Ajouter",
+    thisMonthPays:     "Paies ce mois",
+    totalReceived:     "Total reçu",
+    noPay:             "Pas de paie ce mois",
+    newExpense:        "Nouvelle dépense",
+    descExpense:       "Description - ex: Courses Coles",
+    addExpense:        "+ Ajouter",
+    thisMonthExpenses: "Dépenses ce mois",
+    totalSpent:        "Total dépensé",
+    noExpenses:        "Aucune dépense ce mois",
+    fixedCharges:      "Charges fixes / mois",
+    addACharge:        "Ajouter une charge",
+    chargeName:        "Nom de la charge",
+    monthlyAmount:     "Montant mensuel",
+    addCharge:         "+ Ajouter",
+    thisMonthFlexible: "Flexible ce mois",
+    addSliderBtn:      "+ Curseur",
+    newSlider:         "Nouveau curseur",
+    sliderPlaceholder: "ex: Épargne - Westpac",
+    addSlider:         "+ Ajouter",
+    monthlyTransfers:  "Virements mensuels",
+    fixedChargesSub:   "Charges fixes - toujours pareil",
+    ofFlexible:        "% du flexible",
+    addPayFirst:       "Ajoutez d'abord une paie",
+    chargesNotCovered: "Charges pas encore couvertes",
+    stillToCover:      "Encore",
+    toCover:           "à couvrir",
+    incomeDefault:     "Revenu",
+    expenseDefault:    "Dépense",
+    dateLocale:        "fr-FR",
+  },
+};
 
 var TeliosLogo = function(props) {
   var s = props.size || 80;
@@ -80,11 +170,12 @@ function StatPill(props) {
 }
 
 function TabBar(props) {
+  var t = props.t;
   var tabs = [
-    {id:"income",  label:"Pays",     icon:"💰"},
-    {id:"expense", label:"Expenses", icon:"🛒"},
-    {id:"charges", label:"Charges",  icon:"🏦"},
-    {id:"sliders", label:"Split",    icon:"📊"},
+    {id:"income",  label:t.tabPays,     icon:"💰"},
+    {id:"expense", label:t.tabExpenses, icon:"🛒"},
+    {id:"charges", label:t.tabCharges,  icon:"🏦"},
+    {id:"sliders", label:t.tabSplit,    icon:"📊"},
   ];
   return (
     <div style={{
@@ -94,17 +185,17 @@ function TabBar(props) {
       borderRadius:"20px", padding:"6px",
       boxShadow:lift, border:"1px solid " + P.rim,
     }}>
-      {tabs.map(function(t) {
-        var active = props.tab === t.id;
+      {tabs.map(function(tab) {
+        var active = props.tab === tab.id;
         return (
-          <button key={t.id} onClick={function(){ props.setTab(t.id); }} style={{
+          <button key={tab.id} onClick={function(){ props.setTab(tab.id); }} style={{
             background: active ? "linear-gradient(145deg,#252d3a,#1d2430)" : "transparent",
             border: active ? "1px solid " + P.rimHi : "1px solid transparent",
             borderRadius:"14px", padding:"9px 4px", cursor:"pointer", transition:"all 0.2s",
             boxShadow: active ? liftSm + ", inset 0 1px 0 rgba(255,255,255,0.08)" : "none",
           }}>
-            <div style={{fontSize:"17px"}}>{t.icon}</div>
-            <div style={{fontSize:"10px",color:active?P.text:P.muted,fontWeight:active?"600":"400",marginTop:"3px",fontFamily:F}}>{t.label}</div>
+            <div style={{fontSize:"17px"}}>{tab.icon}</div>
+            <div style={{fontSize:"10px",color:active?P.text:P.muted,fontWeight:active?"600":"400",marginTop:"3px",fontFamily:F}}>{tab.label}</div>
           </button>
         );
       })}
@@ -136,7 +227,7 @@ function BigAmt(props) {
       border:"1px solid " + P.rim, borderRadius:"16px", padding:"16px 18px",
       boxShadow:"inset 0 3px 10px rgba(0,0,0,0.4)", marginBottom:"10px",
     }}>
-      <div style={{fontSize:"11px",color:P.muted,fontWeight:"600",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:"8px"}}>Net Amount</div>
+      <div style={{fontSize:"11px",color:P.muted,fontWeight:"600",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:"8px"}}>{props.label}</div>
       <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
         <span style={{color:props.color,fontSize:"26px",fontWeight:"300"}}>$</span>
         <input type="number" value={props.value}
@@ -195,6 +286,9 @@ function GlowSlider(props) {
 
 export default function App() {
   var now = new Date();
+  var [lang, setLang] = useState(function() {
+    try { var l = localStorage.getItem("telios-lang"); return l === "fr" ? "fr" : "en"; } catch(e) { return "en"; }
+  });
   var [year,       setYear]       = useState(now.getFullYear());
   var [month,      setMonth]      = useState(now.getMonth());
   var [data,       setData]       = useState({});
@@ -209,7 +303,9 @@ export default function App() {
   var [showPicker, setShowPicker] = useState(false);
   var [showSplash, setShowSplash] = useState(true);
 
-  var key = year + "-" + month;
+  var t      = T[lang];
+  var MONTHS = lang === "fr" ? MONTHS_FR : MONTHS_EN;
+  var key    = year + "-" + month;
 
   useEffect(function() {
     try {
@@ -225,9 +321,15 @@ export default function App() {
   }, []);
 
   useEffect(function() {
-    var t = setTimeout(function(){ setShowSplash(false); }, 2200);
-    return function(){ clearTimeout(t); };
+    var timer = setTimeout(function(){ setShowSplash(false); }, 2200);
+    return function(){ clearTimeout(timer); };
   }, []);
+
+  function toggleLang() {
+    var nl = lang === "en" ? "fr" : "en";
+    setLang(nl);
+    try { localStorage.setItem("telios-lang", nl); } catch(e) {}
+  }
 
   function persist(d, ch, sl) {
     setData(d); setCharges(ch); setSliders(sl);
@@ -257,12 +359,12 @@ export default function App() {
 
   function addIncome() {
     var amt = parseFloat(ni.amt); if (!amt) return;
-    updateM({incomes: incomes.concat([{id:Date.now(), amount:amt, label:ni.label||"Income", date:new Date().toLocaleDateString("en-AU")}])});
+    updateM({incomes: incomes.concat([{id:Date.now(), amount:amt, label:ni.label||t.incomeDefault, date:new Date().toLocaleDateString(t.dateLocale)}])});
     setNi({amt:"", label:""});
   }
   function addExpense() {
     var amt = parseFloat(ne.amt); if (!amt) return;
-    updateM({expenses: expenses.concat([{id:Date.now(), amount:amt, label:ne.label||"Expense", date:new Date().toLocaleDateString("en-AU")}])});
+    updateM({expenses: expenses.concat([{id:Date.now(), amount:amt, label:ne.label||t.expenseDefault, date:new Date().toLocaleDateString(t.dateLocale)}])});
     setNe({amt:"", label:""});
   }
   function addCharge() {
@@ -312,7 +414,7 @@ export default function App() {
         </div>
         <div style={{textAlign:"center"}}>
           <div style={{fontSize:"38px", fontWeight:"800", letterSpacing:"0.12em", textTransform:"uppercase", background:"linear-gradient(135deg,#c4b5fd,#818cf8)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", marginBottom:"8px"}}>TELIOS</div>
-          <div style={{fontSize:"13px", color:"rgba(167,139,250,0.5)", letterSpacing:"0.06em"}}>Your financial purpose</div>
+          <div style={{fontSize:"13px", color:"rgba(167,139,250,0.5)", letterSpacing:"0.06em"}}>{t.tagline}</div>
         </div>
         <div style={{display:"flex", gap:"6px", marginTop:"12px"}}>
           {[0,1,2].map(function(i){
@@ -327,11 +429,20 @@ export default function App() {
   return (
     <div style={{fontFamily:F, background:P.bg, minHeight:"100vh", color:P.text, padding:"54px 16px 48px", maxWidth:"440px", margin:"0 auto"}}>
 
-      <div style={{marginBottom:"24px", display:"flex", alignItems:"center", gap:"14px"}}>
-        <div style={{width:"46px", height:"46px", borderRadius:"13px", flexShrink:0, background:"#0B0B1A", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 0 20px rgba(123,92,255,0.25), " + liftSm, border:"1px solid rgba(167,139,250,0.2)"}}>
-          <TeliosLogo size={32} />
+      <div style={{marginBottom:"24px", display:"flex", alignItems:"center", justifyContent:"space-between"}}>
+        <div style={{display:"flex", alignItems:"center", gap:"14px"}}>
+          <div style={{width:"46px", height:"46px", borderRadius:"13px", flexShrink:0, background:"#0B0B1A", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 0 20px rgba(123,92,255,0.25), " + liftSm, border:"1px solid rgba(167,139,250,0.2)"}}>
+            <TeliosLogo size={32} />
+          </div>
+          <div style={{fontSize:"11px", fontWeight:"600", color:P.muted, letterSpacing:"0.14em", textTransform:"uppercase"}}>TELIOS</div>
         </div>
-        <div style={{fontSize:"11px", fontWeight:"600", color:P.muted, letterSpacing:"0.14em", textTransform:"uppercase"}}>TELIOS</div>
+        <button onClick={toggleLang} style={{
+          background:"linear-gradient(145deg,#1e2530,#181d26)",
+          border:"1px solid " + P.rim, borderRadius:"12px",
+          width:"42px", height:"42px", cursor:"pointer",
+          fontSize:"22px", display:"flex", alignItems:"center", justifyContent:"center",
+          boxShadow:liftSm,
+        }}>{lang === "en" ? "🇫🇷" : "🇬🇧"}</button>
       </div>
 
       <RaisedCard>
@@ -343,7 +454,7 @@ export default function App() {
               <span style={{fontSize:"11px", color:P.muted}}>{showPicker ? "▲" : "▼"}</span>
             </div>
             <div style={{fontSize:"12px", color:P.muted, marginTop:"2px"}}>
-              {incomes.length} pay{incomes.length !== 1 ? "s" : ""} &middot; <span style={{color:P.green, fontWeight:"600"}}>{fmt(totalIncome)}</span>
+              {incomes.length} {t.payWord}{incomes.length !== 1 ? "s" : ""} &middot; <span style={{color:P.green, fontWeight:"600"}}>{fmt(totalIncome)}</span>
             </div>
           </div>
           <button onClick={function(){ navMonth(1); }} style={{background:"linear-gradient(145deg,#252d3a,#1a2030)", border:"1px solid " + P.rim, color:P.label, borderRadius:"12px", width:"38px", height:"38px", cursor:"pointer", fontSize:"18px", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:liftSm}}>&#8250;</button>
@@ -384,33 +495,33 @@ export default function App() {
 
       {totalIncome > 0 && (
         <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"8px", marginBottom:"18px"}}>
-          <StatPill label="Received" value={fmt(totalIncome)} color={P.green} />
-          <StatPill label="Charges"  value={fmt(fixedTotal)}  color={P.orange} />
-          <StatPill label="Flexible" value={fmt(flexible)}    color={P.indigo} />
+          <StatPill label={t.received} value={fmt(totalIncome)} color={P.green} />
+          <StatPill label={t.charges}  value={fmt(fixedTotal)}  color={P.orange} />
+          <StatPill label={t.flexible} value={fmt(flexible)}    color={P.indigo} />
         </div>
       )}
 
-      <TabBar tab={tab} setTab={setTab} />
+      <TabBar tab={tab} setTab={setTab} t={t} />
 
       {tab === "income" && (
         <div>
           <RaisedCard accent={P.green}>
-            <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>New Pay</div>
-            <BigAmt value={ni.amt} onChange={function(v){ setNi({amt:v, label:ni.label}); }} color={P.green} />
-            <FInput value={ni.label} onChange={function(v){ setNi({amt:ni.amt, label:v}); }} placeholder="Description - e.g: Shutdown FMG" onEnter={addIncome} style={{marginBottom:"12px"}} />
-            <ActionBtn onClick={addIncome} color={P.green} disabled={!ni.amt}>+ Add Pay</ActionBtn>
+            <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>{t.newPay}</div>
+            <BigAmt label={t.netAmount} value={ni.amt} onChange={function(v){ setNi({amt:v, label:ni.label}); }} color={P.green} />
+            <FInput value={ni.label} onChange={function(v){ setNi({amt:ni.amt, label:v}); }} placeholder={t.descPay} onEnter={addIncome} style={{marginBottom:"12px"}} />
+            <ActionBtn onClick={addIncome} color={P.green} disabled={!ni.amt}>{t.addPay}</ActionBtn>
           </RaisedCard>
           {incomes.length > 0 && (
             <RaisedCard>
               <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"6px"}}>
-                <span style={{fontSize:"12px", fontWeight:"600", color:P.muted, letterSpacing:"0.06em", textTransform:"uppercase"}}>This Month's Pays</span>
+                <span style={{fontSize:"12px", fontWeight:"600", color:P.muted, letterSpacing:"0.06em", textTransform:"uppercase"}}>{t.thisMonthPays}</span>
                 <span style={{background:P.green + "22", color:P.green, borderRadius:"8px", padding:"3px 9px", fontSize:"11px", fontWeight:"700"}}>{incomes.length}</span>
               </div>
               {incomes.map(function(e){
                 return <RowItem key={e.id} label={e.label} sub={e.date} value={fmt(e.amount)} color={P.green} onRemove={function(){ updateM({incomes:incomes.filter(function(x){ return x.id!==e.id; })}); }} />;
               })}
               <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", paddingTop:"12px", borderTop:"1px solid rgba(255,255,255,0.06)", marginTop:"4px"}}>
-                <span style={{fontSize:"12px", color:P.muted}}>Total Received</span>
+                <span style={{fontSize:"12px", color:P.muted}}>{t.totalReceived}</span>
                 <span style={{fontSize:"20px", fontWeight:"700", color:P.green}}>{fmt(totalIncome)}</span>
               </div>
             </RaisedCard>
@@ -418,7 +529,7 @@ export default function App() {
           {incomes.length === 0 && (
             <div style={{textAlign:"center", padding:"40px 0", color:P.muted}}>
               <div style={{fontSize:"32px", marginBottom:"10px"}}>💰</div>
-              <div style={{fontSize:"13px"}}>No pay this month</div>
+              <div style={{fontSize:"13px"}}>{t.noPay}</div>
             </div>
           )}
         </div>
@@ -427,22 +538,22 @@ export default function App() {
       {tab === "expense" && (
         <div>
           <RaisedCard accent={P.red}>
-            <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>New Expense</div>
-            <BigAmt value={ne.amt} onChange={function(v){ setNe({amt:v, label:ne.label}); }} color={P.red} />
-            <FInput value={ne.label} onChange={function(v){ setNe({amt:ne.amt, label:v}); }} placeholder="Description - e.g: Groceries Coles" onEnter={addExpense} style={{marginBottom:"12px"}} />
-            <ActionBtn onClick={addExpense} color={P.red} disabled={!ne.amt}>+ Add Expense</ActionBtn>
+            <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>{t.newExpense}</div>
+            <BigAmt label={t.netAmount} value={ne.amt} onChange={function(v){ setNe({amt:v, label:ne.label}); }} color={P.red} />
+            <FInput value={ne.label} onChange={function(v){ setNe({amt:ne.amt, label:v}); }} placeholder={t.descExpense} onEnter={addExpense} style={{marginBottom:"12px"}} />
+            <ActionBtn onClick={addExpense} color={P.red} disabled={!ne.amt}>{t.addExpense}</ActionBtn>
           </RaisedCard>
           {expenses.length > 0 && (
             <RaisedCard>
               <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"6px"}}>
-                <span style={{fontSize:"12px", fontWeight:"600", color:P.muted, letterSpacing:"0.06em", textTransform:"uppercase"}}>This Month's Expenses</span>
+                <span style={{fontSize:"12px", fontWeight:"600", color:P.muted, letterSpacing:"0.06em", textTransform:"uppercase"}}>{t.thisMonthExpenses}</span>
                 <span style={{background:P.red + "22", color:P.red, borderRadius:"8px", padding:"3px 9px", fontSize:"11px", fontWeight:"700"}}>{expenses.length}</span>
               </div>
               {expenses.map(function(e){
                 return <RowItem key={e.id} label={e.label} sub={e.date} value={"- " + fmt(e.amount)} color={P.red} onRemove={function(){ updateM({expenses:expenses.filter(function(x){ return x.id!==e.id; })}); }} />;
               })}
               <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", paddingTop:"12px", borderTop:"1px solid rgba(255,255,255,0.06)", marginTop:"4px"}}>
-                <span style={{fontSize:"12px", color:P.muted}}>Total Spent</span>
+                <span style={{fontSize:"12px", color:P.muted}}>{t.totalSpent}</span>
                 <span style={{fontSize:"20px", fontWeight:"700", color:P.red}}>- {fmt(totalExpense)}</span>
               </div>
             </RaisedCard>
@@ -450,7 +561,7 @@ export default function App() {
           {expenses.length === 0 && (
             <div style={{textAlign:"center", padding:"40px 0", color:P.muted}}>
               <div style={{fontSize:"32px", marginBottom:"10px"}}>🛒</div>
-              <div style={{fontSize:"13px"}}>No expenses this month</div>
+              <div style={{fontSize:"13px"}}>{t.noExpenses}</div>
             </div>
           )}
         </div>
@@ -460,7 +571,7 @@ export default function App() {
         <div>
           <RaisedCard accent={P.orange}>
             <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px"}}>
-              <span style={{fontSize:"12px", fontWeight:"600", color:P.muted, letterSpacing:"0.06em", textTransform:"uppercase"}}>Fixed Charges / month</span>
+              <span style={{fontSize:"12px", fontWeight:"600", color:P.muted, letterSpacing:"0.06em", textTransform:"uppercase"}}>{t.fixedCharges}</span>
               <span style={{fontSize:"20px", fontWeight:"700", color:P.orange}}>{fmt(fixedTotal)}</span>
             </div>
             {charges.map(function(c){
@@ -468,23 +579,23 @@ export default function App() {
             })}
           </RaisedCard>
           <RaisedCard>
-            <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>Add a Charge</div>
+            <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"14px"}}>{t.addACharge}</div>
             <div style={{display:"flex", gap:"8px", marginBottom:"10px"}}>
               <input value={nc.icon} onChange={function(e){ setNc({amt:nc.amt, label:nc.label, icon:e.target.value}); }}
                 style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px", width:"52px", textAlign:"center", fontSize:"18px", outline:"none", boxSizing:"border-box"}} />
               <input value={nc.label} onChange={function(e){ setNc({amt:nc.amt, label:e.target.value, icon:nc.icon}); }}
-                placeholder="Charge Name"
+                placeholder={t.chargeName}
                 style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px 16px", color:P.text, fontSize:"14px", flex:1, fontFamily:F, outline:"none"}} />
             </div>
             <div style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"16px", padding:"14px 18px", marginBottom:"12px"}}>
-              <div style={{fontSize:"11px", color:P.muted, fontWeight:"500", marginBottom:"6px", textTransform:"uppercase", letterSpacing:"0.07em"}}>Monthly Amount</div>
+              <div style={{fontSize:"11px", color:P.muted, fontWeight:"500", marginBottom:"6px", textTransform:"uppercase", letterSpacing:"0.07em"}}>{t.monthlyAmount}</div>
               <div style={{display:"flex", alignItems:"center", gap:"6px"}}>
                 <span style={{color:P.orange, fontSize:"22px", fontWeight:"300"}}>$</span>
                 <input type="number" value={nc.amt} onChange={function(e){ setNc({amt:e.target.value, label:nc.label, icon:nc.icon}); }} placeholder="0"
                   style={{background:"transparent", border:"none", outline:"none", color:P.orange, fontSize:"28px", fontWeight:"600", width:"100%", fontFamily:F}} />
               </div>
             </div>
-            <ActionBtn onClick={addCharge} color={P.orange} disabled={!nc.amt || !nc.label}>+ Add Charge</ActionBtn>
+            <ActionBtn onClick={addCharge} color={P.orange} disabled={!nc.amt || !nc.label}>{t.addCharge}</ActionBtn>
           </RaisedCard>
         </div>
       )}
@@ -496,10 +607,10 @@ export default function App() {
               <RaisedCard accent={P.indigo}>
                 <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
                   <div>
-                    <div style={{fontSize:"11px", color:P.muted, fontWeight:"600", letterSpacing:"0.07em", textTransform:"uppercase", marginBottom:"4px"}}>This Month's Flexible</div>
+                    <div style={{fontSize:"11px", color:P.muted, fontWeight:"600", letterSpacing:"0.07em", textTransform:"uppercase", marginBottom:"4px"}}>{t.thisMonthFlexible}</div>
                     <div style={{fontSize:"28px", fontWeight:"800", color:P.indigo, letterSpacing:"-0.5px"}}>{fmt(flexible)}</div>
                   </div>
-                  <button onClick={addSlider} style={{background:"linear-gradient(145deg,#252d3a,#1a2030)", border:"1px solid " + P.green + "44", color:P.green, borderRadius:"12px", padding:"8px 14px", fontSize:"12px", fontWeight:"700", cursor:"pointer", fontFamily:F, boxShadow:liftSm + "," + glow(P.green, 0.15)}}>+ Slider</button>
+                  <button onClick={addSlider} style={{background:"linear-gradient(145deg,#252d3a,#1a2030)", border:"1px solid " + P.green + "44", color:P.green, borderRadius:"12px", padding:"8px 14px", fontSize:"12px", fontWeight:"700", cursor:"pointer", fontFamily:F, boxShadow:liftSm + "," + glow(P.green, 0.15)}}>{t.addSliderBtn}</button>
                 </div>
                 {normalized.map(function(sl){
                   return (
@@ -528,19 +639,19 @@ export default function App() {
                 </div>
               </RaisedCard>
               <RaisedCard>
-                <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"12px"}}>New Slider</div>
-                <FInput value={ns.label} onChange={function(v){ setNs({label:v}); }} placeholder="e.g: Savings - Westpac" onEnter={addSlider} style={{marginBottom:"12px"}} />
-                <ActionBtn onClick={addSlider} color={SLIDER_COLORS[sliders.length % SLIDER_COLORS.length]} disabled={!ns.label}>+ Add Slider</ActionBtn>
+                <div style={{fontSize:"12px", color:P.muted, fontWeight:"600", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:"12px"}}>{t.newSlider}</div>
+                <FInput value={ns.label} onChange={function(v){ setNs({label:v}); }} placeholder={t.sliderPlaceholder} onEnter={addSlider} style={{marginBottom:"12px"}} />
+                <ActionBtn onClick={addSlider} color={SLIDER_COLORS[sliders.length % SLIDER_COLORS.length]} disabled={!ns.label}>{t.addSlider}</ActionBtn>
               </RaisedCard>
               <div style={{marginTop:"8px"}}>
-                <div style={{fontSize:"11px", fontWeight:"600", color:P.muted, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:"10px"}}>Monthly Transfers</div>
+                <div style={{fontSize:"11px", fontWeight:"600", color:P.muted, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:"10px"}}>{t.monthlyTransfers}</div>
                 <div style={{background:"linear-gradient(145deg,#1a1f28,#141820)", border:"1px solid " + P.rim, borderRadius:"22px", padding:"8px", boxShadow:lift}}>
-                  {[{label:"Westpac", sub:"Fixed Charges - always the same", color:P.blue, amt:fixedTotal}].concat(normalized).map(function(a, i){
+                  {[{label:"Westpac", sub:t.fixedChargesSub, color:P.blue, amt:fixedTotal}].concat(normalized).map(function(a, i){
                     return (
                       <div key={a.label + i} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 16px", borderRadius:"16px", marginBottom: i < normalized.length ? "4px" : "0", background: i % 2 === 0 ? "linear-gradient(135deg,rgba(255,255,255,0.03),transparent)" : "transparent"}}>
                         <div>
                           <div style={{fontSize:"13px", fontWeight:"600", color:P.text}}>{a.label}</div>
-                          <div style={{fontSize:"11px", color:P.muted, marginTop:"2px"}}>{a.sub || (Math.round(a.pct * 100 / sliderSum) + "% of flexible")}</div>
+                          <div style={{fontSize:"11px", color:P.muted, marginTop:"2px"}}>{a.sub || (Math.round(a.pct * 100 / sliderSum) + t.ofFlexible)}</div>
                         </div>
                         <div style={{fontSize:"22px", fontWeight:"700", color:a.color, textShadow:"0 0 12px " + a.color + "66"}}>{fmt(a.amt)}</div>
                       </div>
@@ -552,8 +663,8 @@ export default function App() {
           ) : (
             <div style={{textAlign:"center", padding:"50px 20px", color:P.muted}}>
               <div style={{fontSize:"36px", marginBottom:"12px"}}>📊</div>
-              <div style={{fontSize:"14px", fontWeight:"500", color:P.sub}}>{totalIncome === 0 ? "Add a pay first" : "Charges not covered yet"}</div>
-              {totalIncome > 0 && <div style={{fontSize:"12px", marginTop:"6px"}}>Still {fmt(fixedTotal - totalIncome)} to cover</div>}
+              <div style={{fontSize:"14px", fontWeight:"500", color:P.sub}}>{totalIncome === 0 ? t.addPayFirst : t.chargesNotCovered}</div>
+              {totalIncome > 0 && <div style={{fontSize:"12px", marginTop:"6px"}}>{t.stillToCover} {fmt(fixedTotal - totalIncome)} {t.toCover}</div>}
             </div>
           )}
         </div>
