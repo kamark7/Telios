@@ -14,10 +14,7 @@ var P = {
 
 var DEFAULT_CHARGES = [];
 var SLIDER_COLORS = ["#818cf8","#34d399","#fb923c","#f472b6","#38bdf8","#a3e635","#fbbf24"];
-var DEFAULT_SLIDERS = [
-  { id:1, label:"Up Bank - Daily Life", pct:30, color:"#818cf8" },
-  { id:2, label:"BRK - Investment",     pct:70, color:"#34d399" },
-];
+var DEFAULT_SLIDERS = [];
 
 var EMOJI_OPTIONS = ["🏠","💪","📱","🎵","🔴","🚗","🍔","💊","📚","✈️","🎮","💡","🏋️","🐶","👕"];
 
