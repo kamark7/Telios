@@ -214,7 +214,7 @@ function FInput(props) {
       style={Object.assign({
         background:"linear-gradient(145deg,#161b23,#121620)",
         border:"1px solid " + P.rim, borderRadius:"13px",
-        padding:"12px 16px", color:P.text, fontSize:"14px", width:"100%",
+        padding:"12px 16px", color:P.text, fontSize:"16px", width:"100%",
         fontFamily:F, outline:"none", boxSizing:"border-box",
         boxShadow:"inset 0 2px 6px rgba(0,0,0,0.35)",
       }, props.style || {})}
@@ -594,7 +594,7 @@ export default function App() {
                 }}>{nc.icon}</button>
                 <input value={nc.label} onChange={function(e){ setNc({amt:nc.amt, label:e.target.value, icon:nc.icon}); }}
                   placeholder={t.chargeName}
-                  style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px 16px", color:P.text, fontSize:"14px", flex:1, fontFamily:F, outline:"none"}} />
+                  style={{background:"linear-gradient(145deg,#161b23,#111520)", border:"1px solid " + P.rim, borderRadius:"13px", padding:"12px 16px", color:P.text, fontSize:"16px", flex:1, fontFamily:F, outline:"none"}} />
               </div>
               {showEmojiPicker && (
                 <div style={{
